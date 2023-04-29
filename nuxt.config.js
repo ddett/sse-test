@@ -62,6 +62,10 @@ export default {
 	// Build Configuration: https://go.nuxtjs.dev/config-build
 	build: {},
 
+	render: {
+		gzip: false,
+	},
+
 	// taken from https://github.com/nuxt/rfcs/issues/36 ... but this is all so confusing
 	// hooks: {
 	// 	ready(nuxt) {
