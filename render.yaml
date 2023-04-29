@@ -2,5 +2,5 @@ services:
   - type: web
   name: sse-test
   env: node
-  buildCommand: npm install
-  startCommand: node api/app.js
+  buildCommand: npm ci && npm run build
+  startCommand: npm start
