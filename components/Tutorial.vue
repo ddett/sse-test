@@ -23,7 +23,7 @@ export default {
   },
 
   mounted() {
-    console.log('Component mounted.')
+    console.log('Component mounted.', this.$nuxt.$sse);
 
     // this.evtSource = new EventSource('https://sse-express-test.herokuapp.com/sse');
     this.evtSource = new EventSource('/api/sse');
