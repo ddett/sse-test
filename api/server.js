@@ -39,17 +39,17 @@ server.get('/sse', (req, res) => {
 	res.flushHeaders(); // flush the headers to establish SSE with client
 
 	let counter = 0;
-	let intervalId = setInterval(() => {
+	const intervalId = setInterval(() => {
 		counter++;
 		console.log('will res.write. counter', counter);
 		res.write(`data: ${JSON.stringify({ text: 'hi there', num: counter })}\n\n`);
 		if (counter >= 10) {
-			res.write('data: [DONE]\n\n'); // this is also what OpenAI uses to signal end of stream https://platform.openai.com/docs/api-reference/completions/create#completions/create-stream
+			// this is also what OpenAI uses to signal end of stream https://platform.openai.com/docs/api-reference/completions/create#completions/create-stream
+			res.write('data: [DONE]\n\n');
 			clearInterval(intervalId);
 			// res.end(); // terminates SSE session
 			return;
 		}
-		// res.write() instead of res.send()
 	}, 800);
 
 	// If client closes connection, stop sending events
