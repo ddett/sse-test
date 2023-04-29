@@ -1,10 +1,10 @@
 // create an express server
-const express = require("express");
+const express = require('express');
 const server = express();
 
 module.exports = {
-  path: "/api",
-  handler: server,
+	path: '/api',
+	handler: server,
 };
 
 // // create a route to handle SSE
@@ -28,33 +28,31 @@ module.exports = {
 //     });
 // });
 
-server.get("/sse", (req, res) => {
-  res.setHeader("Cache-Control", "no-cache");
-  res.setHeader("Content-Type", "text/event-stream");
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Connection", "keep-alive");
-  res.flushHeaders(); // flush the headers to establish SSE with client
+server.get('/sse', (req, res) => {
+	res.setHeader('Cache-Control', 'no-cache');
+	res.setHeader('Content-Type', 'text/event-stream');
+	res.setHeader('Access-Control-Allow-Origin', '*');
+	res.setHeader('Connection', 'keep-alive');
+	res.flushHeaders(); // flush the headers to establish SSE with client
 
-  let counter = 0;
-  let interValID = setInterval(() => {
-    counter++;
-    console.log("counter ", counter);
-    if (counter >= 10) {
-      res.write("data: [DONE]\n\n"); // this is also what OpenAI uses to signal end of stream https://platform.openai.com/docs/api-reference/completions/create#completions/create-stream
-      clearInterval(interValID);
-      // res.end(); // terminates SSE session
-      return;
-    }
-    // res.write() instead of res.send()
-    res.write(
-      `data: ${JSON.stringify({ text: "hi there", num: counter })}\n\n`
-    );
-  }, 1000);
+	let counter = 0;
+	let interValID = setInterval(() => {
+		counter++;
+		console.log('counter ', counter);
+		if (counter >= 10) {
+			res.write('data: [DONE]\n\n'); // this is also what OpenAI uses to signal end of stream https://platform.openai.com/docs/api-reference/completions/create#completions/create-stream
+			clearInterval(interValID);
+			// res.end(); // terminates SSE session
+			return;
+		}
+		// res.write() instead of res.send()
+		res.write(`data: ${JSON.stringify({ text: 'hi there', num: counter })}\n\n`);
+	}, 1000);
 
-  // If client closes connection, stop sending events
-  res.on("close", () => {
-    console.log("client dropped me");
-    clearInterval(interValID);
-    res.end();
-  });
+	// If client closes connection, stop sending events
+	res.on('close', () => {
+		console.log('client dropped me');
+		clearInterval(interValID);
+		res.end();
+	});
 });

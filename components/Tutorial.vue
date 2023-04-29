@@ -1,10 +1,26 @@
 <template>
-  <div>SSE Test</div>
+	<div>
+		<div>SSE Test</div>
+		<div>
+			output:
+			<ul>
+				<li v-for="e in output">
+					{{ e.data }}
+				</li>
+			</ul>
+		</div>
+	</div>
 </template>
 
 <script lang="js">
 export default {
   name: 'Tutorial',
+
+  data() {
+    return {
+      output: []
+    };
+  },
 
   mounted() {
     console.log('Component mounted.')
@@ -21,6 +37,7 @@ export default {
         this.evtSource.close();
       } else {
         console.log('message', e);
+        this.output.push(e);
       }
     };
   }
