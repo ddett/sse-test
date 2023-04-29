@@ -5,23 +5,21 @@ const server = {
   host: process.env.HOST || "0.0.0.0",
 };
 // console.log('process.env.ENV ', process.env.ENV);
-if (process.env.ENV === "dev") {
+if (
+  process.env.ENV === "dev" &&
+  process.env.CERT_DIR &&
+  process.env.CERT_FILENAME
+) {
   // for windows, do this:
   // https://ricktowns.com/post/2020/04/02/windows-10-self-signed-certificate
   // and then:
   // https://helpcenter.gsx.com/hc/en-us/articles/115015887447-Extracting-Certificate-crt-and-PrivateKey-key-from-a-Certificate-pfx-File
   server.https = {
     key: fs.readFileSync(
-      path.resolve(
-        "/Users/dthompson/Documents/Projekte/1905_Balloonary/Dev/cert/localhost",
-        "localhost.key"
-      )
+      path.resolve(process.env.CERT_DIR, `${process.env.CERT_FILENAME}.key`)
     ),
     cert: fs.readFileSync(
-      path.resolve(
-        "/Users/dthompson/Documents/Projekte/1905_Balloonary/Dev/cert/localhost",
-        "localhost.crt"
-      )
+      path.resolve(process.env.CERT_DIR, `${process.env.CERT_FILENAME}.crt`)
     ),
   };
 }

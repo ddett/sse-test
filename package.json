@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "debug": "node --max-old-space-size=4096 --inspect node_modules/nuxt/bin/nuxt",
     "dev": "nuxt",
     "build": "nuxt build",
     "start": "nuxt start",
