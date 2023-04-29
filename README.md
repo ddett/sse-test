@@ -6,8 +6,11 @@
 # install dependencies
 $ npm install
 
+$ CERT_DIR=[SSL certificate dir]
+$ CERT_FILENAME=[SSL certificate filename]
+
 # serve with hot reload at localhost:3000
-$ npm run dev
+$ npm run debug
 
 # build for production and launch server
 $ npm run build
