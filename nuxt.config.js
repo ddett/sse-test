@@ -1,3 +1,4 @@
+import fetch from 'node-fetch';
 import path from 'path';
 import fs from 'fs';
 const server = {
@@ -60,4 +61,16 @@ export default {
 
 	// Build Configuration: https://go.nuxtjs.dev/config-build
 	build: {},
+
+	// taken from https://github.com/nuxt/rfcs/issues/36 ... but this is all so confusing
+	// hooks: {
+	// 	ready(nuxt) {
+	// 		setInterval(async () => {
+	// 			const tweets = await fetch(
+	// 				`https://api.example.com/tweets?from=${Date.now() - 2000}`
+	// 			).then(res => res.json());
+	// 			tweets.forEach(tweet => nuxt.$sse.broadcast('tweet', tweet));
+	// 		}, 2000);
+	// 	},
+	// },
 };

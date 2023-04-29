@@ -25,7 +25,7 @@ export default {
   mounted() {
     console.log('Component mounted.')
 
-    this.evtSource = new EventSource('/api/sse');
+    this.evtSource = new EventSource('https://sse-express-test.herokuapp.com/sse');
     this.evtSource.onerror = err => {
       console.error('EventSource error', err);
     }
