@@ -9,7 +9,7 @@
 		"debug": "node --max-old-space-size=4096 --inspect node_modules/nuxt/bin/nuxt",
 		"dev": "nuxt",
 		"build": "nuxt build",
-		"start": "node api/app.js",
+		"start": "nuxt start",
 		"generate": "nuxt generate"
 	},
 	"dependencies": {
