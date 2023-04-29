@@ -29,6 +29,9 @@ module.exports = {
 // });
 
 server.get('/sse', (req, res) => {
+	console.log('enter sse');
+	console.log('res', res);
+
 	res.setHeader('Cache-Control', 'no-cache');
 	res.setHeader('Content-Type', 'text/event-stream');
 	res.setHeader('Access-Control-Allow-Origin', '*');
@@ -36,23 +39,23 @@ server.get('/sse', (req, res) => {
 	res.flushHeaders(); // flush the headers to establish SSE with client
 
 	let counter = 0;
-	let interValID = setInterval(() => {
+	let intervalId = setInterval(() => {
 		counter++;
-		console.log('counter ', counter);
+		console.log('will res.write. counter', counter);
+		res.write(`data: ${JSON.stringify({ text: 'hi there', num: counter })}\n\n`);
 		if (counter >= 10) {
 			res.write('data: [DONE]\n\n'); // this is also what OpenAI uses to signal end of stream https://platform.openai.com/docs/api-reference/completions/create#completions/create-stream
-			clearInterval(interValID);
+			clearInterval(intervalId);
 			// res.end(); // terminates SSE session
 			return;
 		}
 		// res.write() instead of res.send()
-		res.write(`data: ${JSON.stringify({ text: 'hi there', num: counter })}\n\n`);
-	}, 1000);
+	}, 800);
 
 	// If client closes connection, stop sending events
 	res.on('close', () => {
 		console.log('client dropped me');
-		clearInterval(interValID);
+		clearInterval(intervalId);
 		res.end();
 	});
 });
