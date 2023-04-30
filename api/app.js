@@ -145,14 +145,17 @@ server.get('/sse', (req, res) => {
  * @param {*} userId user to whom the message is directed, or null to send to all users
  */
 function sendWebsocketMessage(message, userId) {
-	console.log('sendWebsocketMessage message', message);
 	message = JSON.stringify(message);
 	if (userId) {
 		const socket = sockets[userId.toString()];
 		socket?.send(message);
+		if (socket) {
+			console.log(`sendWebsocketMessage sent message to ${userId}`, message);
+		}
 	} else {
 		for (const userId in sockets) {
 			sockets[userId].send(message);
+			console.log(`sendWebsocketMessage sent message to ${userId}`, message);
 		}
 	}
 }
