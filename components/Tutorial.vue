@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<div>SSE Test</div>
+		<div>SSE/WS Test</div>
 		<div>
 			output:
 			<ul>
@@ -18,29 +18,54 @@ export default {
 
   data() {
     return {
-      output: []
+      output: [],
+      userId: Math.floor(Math.random() * 1e6)
     };
   },
 
   mounted() {
-    console.log('Component mounted.', this.$nuxt.$sse);
+    console.log('Component mounted.');
 
-    // this.evtSource = new EventSource('https://sse-express-test.herokuapp.com/sse');
-    this.evtSource = new EventSource('/api/sse');
-    this.evtSource.onerror = err => {
-      console.error('EventSource error', err);
-    }
+		// connect websocket
+		// const serverUrl = 'ws://localhost:8080';
+		// const ws = new WebSocket(`${serverUrl}?userId=${this.userId}`);
 
-    this.evtSource.onmessage = e => {
-      if (e.data === '[DONE]') {
-        // this is also what OpenAI uses to signal end of stream https://platform.openai.com/docs/api-reference/completions/create#completions/create-stream
-        console.log('[DONE]', e);
-        this.evtSource.close();
-      } else {
-        console.log('message', e);
-        this.output.push(e);
-      }
+    const server = new URL(location).hostname;
+    const socket = new WebSocket(`ws://${server}:8080`);
+
+    socket.onopen = () => {
+      console.log(`socket open`);
     };
+
+    socket.onclose = (code, reason) => {
+      console.log(`Disconnected from server. Code: ${code}, Reason: ${reason}`);
+    };
+
+    socket.onerror = error => {
+      console.error('ws error', error);
+    };
+
+    socket.onmessage = msg => {
+      console.log('ws received:', msg);
+      this.output.push(msg);
+		}
+
+  //   // this.evtSource = new EventSource('https://sse-express-test.herokuapp.com/sse');
+  //   this.evtSource = new EventSource('/api/sse');
+  //   this.evtSource.onerror = err => {
+  //     console.error('EventSource error', err);
+  //   }
+
+  //   this.evtSource.onmessage = e => {
+  //     if (e.data === '[DONE]') {
+  //       // this is also what OpenAI uses to signal end of stream https://platform.openai.com/docs/api-reference/completions/create#completions/create-stream
+  //       console.log('[DONE]', e);
+  //       this.evtSource.close();
+  //     } else {
+  //       console.log('message', e);
+  //       this.output.push(e);
+  //     }
+  //   };
   }
 }
 </script>

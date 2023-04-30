@@ -8,6 +8,74 @@ module.exports = {
 	handler: server,
 };
 
+const WebSocket = require('ws');
+
+// TODO ws fails in deployment. wss fails everywhere.
+
+// TODO not scalable!
+// "sockets" would need to be persisted somehow
+// also, we are assuming that it will be OK to start multiple websocket servers on 8080, as they will each be in their own container
+// behind a magic Heroku load balancer...
+const sockets = {};
+
+// if (process.env.ENV == 'dev') {
+// 	const testWs = new WebSocket('ws://localhost');
+// 	testWs.addEventListener('error', e => {
+// 		console.log('failed to connect to WebSocket server. starting up...');
+// 		startWebSocketServer();
+// 	});
+// } else {
+startWebSocketServer();
+// }
+
+function startWebSocketServer() {
+	const wsServer = new WebSocket.Server({
+		port: 8080,
+	});
+	console.log('wsServer', wsServer);
+	wsServer.on('connection', (socket, req) => {
+		console.log('ws connection');
+		console.log('ws req.headers.origin', req.headers.origin);
+		console.log('ws req.url', req.url);
+		socket.send('hoohohoh');
+		if (req.headers.origin) {
+			const urlObj = new URL(req.headers.origin + req.url);
+			const userId = urlObj.searchParams.get('userId');
+			// console.log('adding to sockets', userId);
+			sockets[userId] = socket;
+
+			// // When message received, send that message to every socket.
+			// socket.on('message', msg => {
+			// 	console.log('ws message received', msg);
+			// 	sockets.forEach(s => s.send(msg));
+			// });
+
+			// When a socket closes or disconnects, remove it from the array.
+			socket.on('close', () => {
+				console.log('ws close ');
+				for (const userId in sockets) {
+					if (sockets[userId] == socket) {
+						// console.log('ws closed socket for user ', userId);
+						delete sockets[userId];
+					}
+				}
+			});
+		} else {
+			console.warn('WS server connection: no req.origin');
+		}
+	});
+}
+
+// for testing websockets
+setInterval(() => {
+	sendWebsocketMessage({
+		message: 'websocket message',
+		data: {
+			n: Math.floor(Math.random() * 1e6),
+		},
+	});
+}, 2000);
+
 // // create a route to handle SSE
 // server.get('/sse', (req, res) => {
 //     // set headers for SSE
@@ -70,3 +138,21 @@ server.get('/sse', (req, res) => {
 		res.end();
 	});
 });
+
+/**
+ *
+ * @param {*} message object to send, will be JSON.stringified
+ * @param {*} userId user to whom the message is directed, or null to send to all users
+ */
+function sendWebsocketMessage(message, userId) {
+	console.log('sendWebsocketMessage message', message);
+	message = JSON.stringify(message);
+	if (userId) {
+		const socket = sockets[userId.toString()];
+		socket?.send(message);
+	} else {
+		for (const userId in sockets) {
+			sockets[userId].send(message);
+		}
+	}
+}

@@ -1,6 +1,8 @@
 // import fetch from 'node-fetch';
 import path from 'path';
 import fs from 'fs';
+
+console.log('port', process.env.PORT);
 const server = {
 	port: process.env.PORT || 3000,
 	host: process.env.HOST || '0.0.0.0',
