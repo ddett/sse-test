@@ -13,6 +13,7 @@
 		"generate": "nuxt generate"
 	},
 	"dependencies": {
+		"@deepsource/nuxt-websocket": "^1.0.0",
 		"core-js": "^3.15.1",
 		"express": "^4.18.2",
 		"node-res": "^5.0.1",

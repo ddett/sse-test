@@ -59,7 +59,18 @@ export default {
 	buildModules: [],
 
 	// Modules: https://go.nuxtjs.dev/config-modules
-	modules: [],
+	modules: ['@deepsource/nuxt-websocket'],
+
+	websocket: {
+		// url: 'wss://echo.websocket.events/',
+		reconnectInterval: 1000,
+	},
+
+	publicRuntimeConfig: {
+		websocket: {
+			url: process.env.WEBSOCKET_URL,
+		},
+	},
 
 	// Build Configuration: https://go.nuxtjs.dev/config-build
 	build: {},
